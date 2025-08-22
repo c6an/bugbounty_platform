@@ -1,0 +1,386 @@
+/* ===========================
+    HACKINGCAMP — Main Site Theme (style.css)
+   =========================== */
+
+/* ---------- Tokens (Based on login.css) ---------- */
+:root {
+  --bg: #000;
+  --panel: #070b13;
+  --panel-2: #050a12;
+  --grid: #101827;
+  --ink: #f2f7ff;
+  --muted: #9fb2c9;
+  --neo: #3ec9ff;
+  --neo2: #00ff88;
+  --danger: #ff4d4d;
+  --radius: 14px;
+  --wrap: 1100px;
+  --side: clamp(14px, 3vw, 28px);
+  --logo-url: url("01.png");
+}
+
+/* ---------- Base & Background ---------- */
+* {
+  box-sizing: border-box;
+}
+html {
+  font-size: clamp(14px, 1.05vw + 10px, 16px);
+}
+body {
+  margin: 0;
+  color: var(--ink);
+  background: var(--bg);
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "JetBrains Mono",
+    monospace;
+  line-height: 1.75;
+  letter-spacing: 0.01em;
+  -webkit-font-smoothing: antialiased;
+}
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background: radial-gradient(
+      70vmax 50vmax at 12% -10%,
+      rgba(62, 201, 255, 0.12),
+      transparent 60%
+    ),
+    radial-gradient(
+      70vmax 50vmax at 108% 8%,
+      rgba(0, 255, 136, 0.1),
+      transparent 60%
+    ),
+    center/42vmin no-repeat var(--logo-url);
+  mix-blend-mode: screen;
+  opacity: 0.22;
+  filter: drop-shadow(0 0 10px #000);
+}
+
+/* ---------- Navbar ---------- */
+.navbar,
+.navbar.bg-dark {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  padding: clamp(12px, 2vw, 18px) clamp(12px, 3vw, 28px);
+  background: rgba(10, 11, 14, 0.9) !important;
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(62, 201, 255, 0.35) !important;
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.3px;
+  text-transform: uppercase;
+  color: #fff !important;
+  position: relative;
+  padding-left: 50px;
+}
+
+.navbar-brand::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  background: center/contain no-repeat var(--logo-url);
+  filter: drop-shadow(0 0 8px rgba(62, 201, 255, 0.55));
+}
+
+.navbar .nav-link,
+.navbar .navbar-text {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #eaf6ff !important;
+  opacity: 0.9;
+  transition: all 0.15s ease;
+}
+
+.navbar-dark .nav-link:hover {
+  /* Uses --neo or --accent-2 if available, otherwise falls back to a default blue */
+  color: var(--neo, var(--accent-2, #3ec9ff)) !important;
+  text-shadow: 0 0 10px rgba(62, 201, 255, 0.6);
+  transform: translateY(-1px);
+}
+/* ---------- General Layout & Cards ---------- */
+.container {
+  width: min(100% - 2 * var(--side), var(--wrap));
+  margin-inline: auto;
+  position: relative;
+  z-index: 1;
+}
+.container > h1 {
+  margin-bottom: 2.5rem !important;
+}
+.main-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 100px);
+  gap: 40px;
+}
+h1,
+.h1 {
+  margin: 0 0 14px;
+  text-align: center;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--ink);
+}
+p {
+  color: var(--muted);
+  text-align: center;
+}
+
+/* ---------- Buttons (Unified) ---------- */
+.button-container {
+  display: flex !important;
+  justify-content: center !important;
+  gap: 1rem !important;
+  margin-top: 2.5rem !important;
+}
+.btn:hover,
+button:hover {
+  transform: translateY(-1px);
+  border-color: var(--neo);
+  box-shadow: inset 0 0 14px rgba(62, 201, 255, 0.16),
+    0 0 18px rgba(62, 201, 255, 0.25);
+}
+.btn-primary {
+  background: linear-gradient(
+    180deg,
+    rgba(62, 201, 255, 0.22),
+    rgba(62, 201, 255, 0.08)
+  );
+  border-color: var(--neo);
+}
+
+/* ---------- Forms (Unified) ---------- */
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.form-control,
+input[type="text"],
+input[type="password"],
+input[type="url"],
+select,
+textarea {
+  width: 100%;
+  min-height: 46px;
+  background: #02060d;
+  color: var(--neo) !important;
+  caret-color: var(--neo);
+  border: 1px solid #0e1626;
+  border-radius: 10px;
+  padding: 0.65em 0.85em;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s, background-color 0.2s;
+}
+.form-group {
+  margin-bottom: 2rem !important;
+}
+.form-control:focus,
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="url"]:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--neo) !important;
+  box-shadow: 0 0 0 3px rgba(62, 201, 255, 0.18) !important;
+  background: #000;
+}
+.form-control,
+select,
+#content {
+  /* Applying to the editor as well */
+  box-shadow: 0 0 15px rgba(159, 178, 201, 0.1); /* Using --muted color for the glow */
+}
+
+::placeholder {
+  color: #7bbdf0;
+  opacity: 0.85;
+}
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color: var(--neo) !important;
+  box-shadow: 0 0 0px 1000px #02060d inset !important;
+  transition: background-color 9999s ease-in-out 0s;
+}
+#content {
+  background-color: #ffffff !important;
+  border: 1px solid #dcdcdc !important;
+  color: #333333 !important;
+}
+
+#content .toastui-editor-toolbar,
+#content .toastui-editor-md-tab-container {
+  background-color: #f7f7f7 !important;
+  border-bottom: 1px solid #dcdcdc !important;
+}
+
+#content .toastui-editor-toolbar-icons,
+#content .tab-item {
+  color: #555555 !important;
+}
+
+#content .toastui-editor-toolbar-icons .active,
+#content .tab-item.active {
+  background-color: #e0e0e0 !important;
+  color: #000000 !important;
+}
+
+#content .ProseMirror,
+#content .toastui-editor-contents {
+  background-color: #ffffff !important;
+  color: #333333 !important;
+}
+
+#content * {
+  color: #333333 !important;
+}
+/* ---------- Search Box (index.php & search.php) ---------- */
+#search_box {
+  max-width: 700px;
+  margin: 32px auto 0;
+  position: relative;
+  z-index: 1;
+}
+#search_box form {
+  display: flex;
+  gap: 8px;
+  background: var(--panel-2);
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  padding: 8px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+}
+#search_box select {
+  background: transparent;
+  border: none;
+  color: var(--neo);
+}
+#search_box select option {
+  background: #02060d;
+  color: var(--neo);
+}
+#search_box input[type="text"] {
+  flex-grow: 1;
+  background: transparent;
+  border: none;
+}
+#search_box button {
+  min-height: auto;
+  border-radius: 10px;
+  padding: 0.5em 1.2em;
+  font-family: inherit;
+  cursor: pointer;
+  transition: transform 0.1s ease, box-shadow 0.15s ease,
+    border-color 0.15s ease;
+
+  background: linear-gradient(
+    180deg,
+    rgba(62, 201, 255, 0.22),
+    rgba(62, 201, 255, 0.08)
+  );
+  border: 1px solid var(--neo);
+  color: #fff;
+  box-shadow: inset 0 0 10px rgba(62, 201, 255, 0.1);
+}
+#search_box button:hover {
+  transform: translateY(-1px);
+  border-color: var(--neo);
+  box-shadow: inset 0 0 14px rgba(62, 201, 255, 0.16),
+    0 0 18px rgba(62, 201, 255, 0.25);
+}
+
+/* ---------- Search Results (search.php) ---------- */
+.search-summary {
+  text-align: center;
+  color: var(--muted);
+  margin: 24px 0;
+}
+.search-summary span {
+  color: var(--neo2);
+  font-weight: 700;
+}
+.search-results-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 12px;
+}
+.search-results-list li {
+  background: var(--panel-2);
+  border: 1px solid var(--grid);
+  border-radius: var(--radius);
+  padding: var(--side);
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+.search-results-list li:hover {
+  transform: translateY(-2px);
+  border-color: var(--neo);
+}
+.search-results-list a {
+  text-decoration: none;
+}
+.search-results-list h5 {
+  color: var(--neo);
+  margin: 0 0 8px;
+  font-weight: 700;
+  transition: color 0.2s;
+}
+.search-results-list a:hover h5 {
+  color: var(--neo2);
+  text-decoration: underline;
+}
+.search-results-list small {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+.not-found-container {
+  text-align: center;
+  margin-top: 40px;
+  padding: 24px;
+}
+.not-found-container::before {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 24px;
+  background: center/contain no-repeat var(--logo-url);
+  opacity: 0.3;
+  filter: drop-shadow(0 0 10px #000);
+}
+.not-found-container h4 {
+  color: var(--danger);
+  font-weight: 900;
+  font-size: 2rem;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  text-shadow: 0 0 8px rgba(255, 77, 77, 0.5);
+}
+.not-found-container p {
+  color: var(--ink);
+  font-size: 1.1rem;
+  max-width: 50ch;
+  margin: 8px auto 0;
+}
+.not-found-container p span {
+  color: var(--neo);
+  font-weight: 700;
+}
