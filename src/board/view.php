@@ -3,14 +3,14 @@ session_start();
 include "../db.php";
 
 if (!isset($_GET['id'])) {
-    echo "<script>alert('There are no posts.'); location.href='board.php';</script>";
+    echo "<script>alert('There are no posts.'); location.href='index.php';</script>";
     exit;
 }
 $board_id = (int)$_GET['id'];
 
 
 $sql = "
-    SELECT f.*, u.user_name 
+    SELECT f.*, u.user_name
     FROM free_board f
     JOIN user u ON f.user_id = u.user_id
     WHERE f.board_id = ?
@@ -22,19 +22,20 @@ $result = $stmt->get_result();
 $board = $result->fetch_assoc();
 
 if (!$board) {
-    echo "<script>alert('There is no post.'); location.href='board.php';</script>";
+    echo "<script>alert('There is no post.'); location.href='index.php';</script>";
     exit;
 }
-if ($board['board_locked'] == 1 && (!isset($_SESSION['view_allowed_' . $board_id]) || $_SESSION['view_allowed_' . $board_id] !== true)) {
-    header("Location: check_pw.php?action=view&id=" . $board_id);
-    exit;
-}
+// if ($board['board_locked'] == 1 && (!isset($_SESSION['view_allowed_' . $board_id]) || $_SESSION['view_allowed_' . $board_id] !== true)) {
+//     header("Location: check_pw.php?action=view&id=" . $board_id);
+//     exit;
+// }
 
-if (!isset($_SESSION['viewed_post_' . $board_id])) {
+$current_user_id = $_SESSION['user_id'] ?? null;
+if ($current_user_id !== $board['user_id']) {
     $stmt_update = $db_conn->prepare("UPDATE free_board SET board_views = board_views + 1 WHERE board_id = ?");
     $stmt_update->bind_param("i", $board_id);
     $stmt_update->execute();
-    $_SESSION['viewed_post_' . $board_id] = true; 
+
     $board['board_views']++;
 }
 ?>
@@ -53,7 +54,7 @@ if (!isset($_SESSION['viewed_post_' . $board_id])) {
         <a class="navbar-brand" href="../index.php">hackingcamp Platform</a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav ml-auto">
-                <li class="nav-item active"><a class="nav-link" href="board.php">Board</a></li>
+                <li class="nav-item active"><a class="nav-link" href="index.php">Board</a></li>
                 <?php if(!isset($_SESSION['user_id'])){ ?>
                     <li class="nav-item"><a class="nav-link" href="../login/login.php">login</a></li>
                 <?php } else { ?>
@@ -66,10 +67,10 @@ if (!isset($_SESSION['viewed_post_' . $board_id])) {
             </ul>
         </div>
     </nav>
-    <div class="container">
+    <div class="container custom-content-wrapper">
         <div id="board_read">
-            <h2><?= htmlspecialchars($board['board_title']); ?></h2>
-            
+            <h2><?= $board['board_title']; ?></h2>
+
             <div id="user_info">
                 <div class="meta-item">
                     <span class="meta-label">WRITER:</span>
@@ -87,9 +88,9 @@ if (!isset($_SESSION['viewed_post_' . $board_id])) {
             <div id="bo_content">
                 <?php echo $board['board_content']; ?>
             </div>
-            
+
             <div class="button-group">
-                <a href="board.php" class="btn">List</a>
+                <a href="index.php" class="btn">List</a>
                 <?php if (isset($_SESSION['user_id']) && $_SESSION['user_id'] === $board['user_id']): ?>
                     <a href="rewrite.php?id=<?= $board['board_id']; ?>" class="btn">Edit</a>
                     <a href="delete.php?id=<?= $board['board_id']; ?>" class="btn btn-delete" onclick="return confirm('Are you sure?');">Delete</a>
@@ -97,7 +98,7 @@ if (!isset($_SESSION['viewed_post_' . $board_id])) {
             </div>
         </div>
     </div>
-    
+
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

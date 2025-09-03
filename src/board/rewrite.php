@@ -8,11 +8,11 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$user_name = $_SESSION['user_name']; 
+$user_name = $_SESSION['user_name'];
 
 
 if (!isset($_GET['id'])) {
-    echo "<script>alert('Please select a post.'); location.href='board.php';</script>";
+    echo "<script>alert('Please select a post.'); location.href='index.php';</script>";
     exit;
 }
 $board_id = (int)$_GET['id'];
@@ -23,10 +23,11 @@ $sql->execute();
 $result = $sql->get_result();
 $board = $result->fetch_assoc();
 
-if (!$board || $board['user_id'] != $user_id) {
-    echo "<script>alert('The post does not exist or you do not have permission.'); location.href='board.php';</script>";
-    exit;
-}
+// if (!$board || $board['user_id'] != $user_id) {
+//     echo "<script>alert('The post does not exist or you do not have permission.'); location.href='index.php';</script>";
+//     exit;
+// }
+
 if ($board['board_locked'] == 1 && (!isset($_SESSION['view_allowed_' . $board_id]) || $_SESSION['view_allowed_' . $board_id] !== true)) {
     header("Location: check_pw.php?action=edit&id=" . $board_id);
     exit;
@@ -42,9 +43,9 @@ $is_secret_checked = !empty($board['secret_pw']) ? 'checked' : '';
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Edit Freeboard</title>
+<title>hackingcamp Platform</title>
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"/>
-<script src="../resource/ckeditor/ckeditor.js"></script>
+<script type="text/javascript" src="../resource/ckeditor/ckeditor.js"></script>
 <link rel="stylesheet" href="./board_style.css" />
 </head>
 <body>
@@ -52,7 +53,7 @@ $is_secret_checked = !empty($board['secret_pw']) ? 'checked' : '';
     <a class="navbar-brand" href="../index.php">hackingcamp Platform</a>
 </nav>
 
-<div class="container">
+<div class="container custom-content-wrapper">
 <h1>Edit Freeboard</h1>
 <form action="rewrite_ok.php" method="post">
     <input type="hidden" name="board_id" value="<?php echo $board_id; ?>">
@@ -85,8 +86,8 @@ $is_secret_checked = !empty($board['secret_pw']) ? 'checked' : '';
         <input type="password" class="form-control" id="secret_pw" name="secret_pw">
     </div>
     <div class="button-group">
-        <a href="view.php?id=<?php echo $board_id; ?>" class="btn">Cancel</a> 
-        <button type="submit" class="btn">Update</button> 
+        <a href="view.php?id=<?php echo $board_id; ?>" class="btn">Cancel</a>
+        <button type="submit" class="btn">Update</button>
     </div>
 </form>
 </div>

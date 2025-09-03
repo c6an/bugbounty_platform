@@ -33,7 +33,7 @@ if (!empty($parts['query'])) {
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-  <title>hackingcamping platform</title>
+  <title>hackingcamp Platform</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toast-ui/editor@3.2.2/dist/toastui-editor.min.css">
   <style>
@@ -84,7 +84,7 @@ if (!empty($parts['query'])) {
     .kv .v{
       color: #111;
       word-break: break-word;
-      overflow-wrap: anywhere;      
+      overflow-wrap: anywhere;
     }
 
     .kv .v a{
@@ -119,8 +119,8 @@ if (!empty($parts['query'])) {
       border: 1px solid #e0e0e0;
       border-radius: 8px;
       background-color: #fdfdfd;
-      min-height: 200px; 
-      width: 100%; 
+      min-height: 200px;
+      width: 100%;
       box-sizing: border-box;
     }
     @media (max-width: 640px){
@@ -140,6 +140,7 @@ if (!empty($parts['query'])) {
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
+        <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
         <li class="nav-item"><a class="nav-link" href="./board/index.php">board</a></li>
         <?php if(!$s_id){ ?>
             <li class="nav-item"><a class="nav-link" href="./login/login.php">login</a></li>
@@ -166,7 +167,6 @@ if (!empty($parts['query'])) {
   <div class="kv"><div class="k">Hacker of Honor</div><div class="v"><?= htmlspecialchars($row['user_name']) ?></div></div>
   <div class="kv"><div class="k">Report Date</div><div class="v"><?= htmlspecialchars($row['report_date']) ?></div></div>
   <div class="kv"><div class="k">Endpoint</div><div class="v"><?= htmlspecialchars($row['endpoint']) ?></div></div>
-  <div class="kv"><div class="k">Parameter</div><div class="v"><?= htmlspecialchars($parameter) ?></div></div>
   <div class="kv"><div class="k">URL</div><div class="v"><a href="<?= htmlspecialchars($row['url']) ?>" target="_blank"><?= htmlspecialchars($row['url']) ?></a></div></div>
   <div class="kv"><div class="k">Vuln Type</div><div class="v"><?= htmlspecialchars(strtoupper($row['vuln_type'])) ?></div></div>
 
@@ -182,13 +182,10 @@ if (!empty($parts['query'])) {
 
 <script>
   window.onload = function() {
-    
-    // 뷰어 초기화
+
     try {
-      // 숨겨진 div에서 안전하게 마크다운 텍스트를 읽어옵니다.
       const mdPoc = document.getElementById('poc-data').textContent || '';
-      
-      // 'toastui' 객체가 확실히 로드된 후 이 코드가 실행됩니다.
+
       new toastui.Editor.factory({
         el: document.querySelector('#poc-viewer'),
         viewer: true,
@@ -196,10 +193,9 @@ if (!empty($parts['query'])) {
       });
     } catch (e) {
       console.error("Toast UI 뷰어 초기화에 실패했습니다:", e);
-      document.querySelector('#poc-viewer').innerText = "PoC 내용을 불러오는 데 실패했습니다. (개발자 콘솔을 확인하세요)";
+      document.querySelector('#poc-viewer').innerText = "PoC 내용을 불러오는 데 실패했습니다.";
     }
 
-    // PDF 다운로드 버튼 이벤트 설정
     document.getElementById('btnPdf').addEventListener('click', function(){
       const el = document.getElementById('report-print');
       const filename = <?= json_encode($code . '.pdf') ?>;

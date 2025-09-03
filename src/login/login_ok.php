@@ -1,7 +1,7 @@
 <?php
 session_start();
-include "../db.php"; 
-require_once 'sign.php'; 
+include "../db.php";
+require_once 'sign.php';
 
 $signin = new Signin_submit();
 $req = $signin->init();
@@ -13,13 +13,13 @@ if (empty($req['userid']) || empty($req['userpw'])) {
 
 $user_id = $req['userid'];
 $user_pw = $req['userpw'];
-$returnUrl = $req['redirect'] ?? '../index.php';
+$returnUrl = $_GET['redirect'] ?? ($req['redirect'] ?? '../index.php');
 
 $sql = "SELECT user_no, user_id, user_pw, user_name, role FROM user WHERE user_id=?";
 $stmt = $db_conn->prepare($sql);
 $stmt->bind_param("s", $user_id);
 $stmt->execute();
-$result = $stmt->get_result();  
+$result = $stmt->get_result();
 
 while ($row = $result->fetch_assoc()) {
     if (password_verify($user_pw, $row['user_pw'])) {
@@ -33,7 +33,7 @@ while ($row = $result->fetch_assoc()) {
         $_SESSION['user_no']   = $row['user_no'];
         $_SESSION['user_id']   = $row['user_id'];
         $_SESSION['user_name'] = $row['user_name'];
-        $_SESSION['role'] = $row['role'] ?? 'user'; 
+        $_SESSION['role'] = $row['role'] ?? 'user';
 
         header("Location: " . $returnUrl);
         exit;
@@ -42,5 +42,4 @@ while ($row = $result->fetch_assoc()) {
 
 echo "<script>alert('Incorrect User ID or PW'); history.back();</script>";
 exit;
-
 

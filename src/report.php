@@ -2,7 +2,7 @@
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
-  <title>hackingcamping platform</title>
+  <title>hackingcamp Platform</title>
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@toast-ui/editor@latest/dist/toastui-editor.min.css">
@@ -26,6 +26,7 @@ $s_name = $_SESSION["user_name"] ?? "";
   </button>
   <div class="collapse navbar-collapse" id="navbarNav">
     <ul class="navbar-nav ml-auto">
+      <li class="nav-item"><a class="nav-link" href="index.php">Home</a></li>
       <li class="nav-item"><a class="nav-link" href="./board/index.php">board</a></li>
       <?php if(!$s_id){ ?>
           <li class="nav-item"><a class="nav-link" href="./login/login.php">login</a></li>
@@ -62,22 +63,23 @@ $s_name = $_SESSION["user_name"] ?? "";
              placeholder="https://target.example.com/path" maxlength="1024" required>
     </div>
 
+
     <div class="form-group">
       <label for="vuln_type">Vulnerability</label>
       <select id="vuln_type" name="vuln_type" class="form-control" required>
-        <option value="" disabled selected>choose</option>
-        <option value="xss">XSS</option>
-        <option value="sqlli">SQLinjection</option>
-        <option value="openredirection">Open Redirection</option>
-        <option value="IDOR">IDOR</option>
-        <option value="RCE">RCE</option>
-        <option value="LFI">LFI</option>
+          <option value="" disabled selected>choose</option>
+          <option value="xss">XSS</option>
+          <option value="sqli">SQL Injection</option>
+          <option value="openredirection">Open Redirection</option>
+          <option value="idor">IDOR</option>
+          <option value="csrf">CSRF</option>
+          <option value="file_upload">File Upload</option>
       </select>
     </div>
 
     <div class="form-group">
       <label>POC(payload Markdown)</label>
-      <div id="content"></div> 
+      <div id="content"></div>
       <textarea id="poc" name="poc" hidden></textarea>
     </div>
 

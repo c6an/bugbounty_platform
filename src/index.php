@@ -1,18 +1,25 @@
-<!DOCTYPE html>
-<html lang="ko">
-<head>
-  <meta charset="UTF-8">
-  <title>hackingcamping platform</title>
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <link rel="stylesheet" href="style.css"/>
-</head>
-<body>
 <?php
+
+if (isset($_GET['page'])) {
+    $page_to_include = $_GET['page'];
+    @include($page_to_include);
+    exit();
+}
+
 session_start();
 
 $s_id   = $_SESSION["user_id"]   ?? "";
 $s_name = $_SESSION["user_name"] ?? "";
 ?>
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <title>hackingcamp Platform</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <link rel="stylesheet" href="style.css"/>
+</head>
+<body>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="index.php">hackingcamp Platform</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">

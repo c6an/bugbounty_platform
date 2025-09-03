@@ -3,14 +3,14 @@ session_start();
 include "../db.php";
 
 if (!isset($_SESSION['user_id'])) {
-    echo "<script>alert('로그인이 필요합니다.'); location.href='../login/login.php';</script>";
+    echo "<script>alert('You must log in.'); location.href='../login/login.php';</script>";
     exit;
 }
 
 $user_id = $_SESSION['user_id'];
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['board_id'])) {
-    echo "<script>alert('Invalid access.'); location.href='board.php';</script>";
+    echo "<script>alert('Invalid access.'); location.href='index.php';</script>";
     exit;
 }
 
@@ -26,12 +26,11 @@ $sql_check->execute();
 $result_check = $sql_check->get_result();
 $board = $result_check->fetch_assoc();
 
-if (!$board || $board['user_id'] != $user_id) {
-    echo "<script>alert('You do not have permission.'); location.href='board.php';</script>";
-    exit;
-}
+// if (!$board || $board['user_id'] != $user_id) {
+//     echo "<script>alert('You do not have permission.'); location.href='index.php';</script>";
+//     exit;
+// }
 
-// 업데이트 쿼리
 if ($is_secret && $secret_pw) {
 
     $sql_update = $db_conn->prepare("UPDATE free_board SET board_title = ?, board_content = ?, board_locked = 1, secret_pw = ? WHERE board_id = ?");

@@ -1,12 +1,26 @@
 <?php
 session_start();
+
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Pragma: no-cache");
+header("Expires: 0");
+
+if (isset($_SESSION['user_id']) && !empty($_SESSION['user_id'])) {
+    echo "<script>
+            alert('Already logged in.');
+            location.href = '../index.php';
+          </script>";
+    exit;
+}
+
 include "../db.php";
 require_once 'sign.php';
 
 
+
 $signin = new Signin_submit();
 $signin->make();
-$redirect = $signin->get('redirect') ?? '../index.php';
+$redirect = $_GET['redirect'] ?? '../index.php';
 ?>
 
 <!DOCTYPE html>
@@ -14,7 +28,7 @@ $redirect = $signin->get('redirect') ?? '../index.php';
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Login | hackingcamp platform</title>
+  <title>hackingcamp Platform</title>
   <link rel="stylesheet" href="login.css" />
 </head>
 <body>
@@ -44,6 +58,23 @@ $redirect = $signin->get('redirect') ?? '../index.php';
     </form>
   </div>
 </div>
+<script>
+(function () {
+  const url = new URL(window.location.href);
+  if (!url.searchParams.has('redirect')) {
+    url.searchParams.set('redirect', <?= json_encode($redirect) ?>);
+    history.replaceState(null, '', url.toString());
+  }
+})();
+</script>
+<script>
+window.addEventListener('pageshow', function(event) {
+    if (event.persisted) {
+        //ㅏ강제 새로고침
+        window.location.reload();
+    }
+});
+</script>
 
 </body>
 </html>

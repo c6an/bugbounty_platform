@@ -1,13 +1,13 @@
 <?php
-include "../db.php"; 
 session_start();
+include "../db.php";
 
 $s_id   = $_SESSION["user_id"]   ?? "";
 $s_name = $_SESSION["user_name"] ?? "";
 
 
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10; 
+$limit = 5;
 $offset = ($page - 1) * $limit;
 
 $sql_count = "SELECT COUNT(*) AS cnt FROM free_board";
@@ -15,18 +15,32 @@ $result_count = $db_conn->query($sql_count);
 $total_count = $result_count->fetch_assoc()['cnt'];
 $total_pages = ceil($total_count / $limit);
 
+$pinned_post_id = 1;
+$pinned_post = null;
+$sql_pinned = "SELECT f.board_id, f.board_title, f.board_date, f.board_views, f.board_locked, u.user_name
+               FROM free_board f
+               JOIN user u ON f.user_id = u.user_id
+               WHERE f.board_id = ?";
+$stmt_pinned = $db_conn->prepare($sql_pinned);
+$stmt_pinned->bind_param("i", $pinned_post_id);
+$stmt_pinned->execute();
+$result_pinned = $stmt_pinned->get_result();
+if ($result_pinned->num_rows > 0) {
+    $pinned_post = $result_pinned->fetch_assoc();
+}
 
 $sql = "
-    SELECT 
+    SELECT
         f.board_id, f.board_title, f.board_date, f.board_views,
         f.board_locked, u.user_name
     FROM free_board f
     JOIN user u ON f.user_id = u.user_id
+    WHERE f.board_id != ? -- Excluding pinned posts
     ORDER BY f.board_id DESC
     LIMIT ? OFFSET ?
 ";
 $stmt = $db_conn->prepare($sql);
-$stmt->bind_param("ii", $limit, $offset);
+$stmt->bind_param("iii", $pinned_post_id, $limit, $offset);
 $stmt->execute();
 $result = $stmt->get_result();
 ?>
@@ -49,7 +63,7 @@ $result = $stmt->get_result();
             height: 100%;
             background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(5px);
-            display: none; 
+            display: none;
             align-items: center;
             justify-content: center;
             z-index: 1000;
@@ -76,6 +90,14 @@ $result = $stmt->get_result();
             margin-top: 1rem;
             min-height: 1.2em;
         }
+         .pinned-post td {
+            color: #e5355eff;
+            font-weight: bold;
+        }
+        .pinned-post td a {
+            color: #e5355eff;
+            font-weight: bold;
+        }
     </style>
 
 </head>
@@ -95,14 +117,14 @@ $result = $stmt->get_result();
                     <a class="nav-link" href="../login/logout.php">logout</a>
                 </li>
             <?php } ?>
-            <li class="nav-item"><a class="nav-link" href="/bugbounty/report.php">report</a></li>
+            <li class="nav-item"><a class="nav-link" href="../report.php">report</a></li>
             <li class="nav-item"><span class="navbar-text text-light ml-2"><?= htmlspecialchars($s_name) ?></span></li>
         </ul>
     </div>
     </nav>
-    <div id="board_area">
+    <div id="board_area" class="custom-content-wrapper">
         <h1>Free Board</h1>
-        <p>reference:<a href="https://github.com/payloadbox/xss-payload-list">xss payload</a></p>
+        <p>reference:<a href="https://github.com/payloadbox/xss-payload-list">xss payload </a>| ckediter 4.5.11 </p>
         <table>
             <thead>
                 <tr>
@@ -115,9 +137,28 @@ $result = $stmt->get_result();
                 </tr>
             </thead>
             <tbody>
-            <?php 
-            $post_num = $total_count - $offset;
-            while($row = $result->fetch_assoc()) { 
+
+            <?php if ($pinned_post): ?>
+            <?php
+                $pinned_title = strlen($pinned_post['board_title']) > 30 ? mb_substr($pinned_post['board_title'], 0, 30, 'UTF-8') . "..." : $pinned_post['board_title'];
+            ?>
+                <tr class="pinned-post">
+                    <td><i class="fas fa-thumbtack"></i></td>
+                    <td>
+                        <a href="view.php?id=<?= $pinned_post['board_id'] ?>">
+                            <?= htmlspecialchars($pinned_title) ?>
+                        </a>
+                    </td>
+                    <td><?= htmlspecialchars($pinned_post['user_name']) ?></td>
+                    <td><?= $pinned_post['board_date'] ?></td>
+                    <td><?= $pinned_post['board_views'] ?></td>
+                    <td><?= $pinned_post['board_locked'] ? 'Yes' : 'No' ?></td>
+                </tr>
+            <?php endif; ?>
+
+            <?php
+            $post_num = ($total_count - 1) - $offset;
+            while($row = $result->fetch_assoc()) {
                 $title = strlen($row['board_title']) > 30 ? mb_substr($row['board_title'], 0, 30, 'UTF-8') . "..." : $row['board_title'];
                 $is_locked = (bool)$row['board_locked'];
                 $link_href = $is_locked ? "#" : "view.php?id=" . $row['board_id'];
@@ -129,7 +170,7 @@ $result = $stmt->get_result();
                     <td>
                         <a href="<?= $link_href ?>" class="<?= $link_class ?>" <?= $data_attributes ?>>
                             <?php if($is_locked) echo ""; ?>
-                            <?php echo htmlspecialchars($title); ?>
+                            <?php echo $title; ?>
                         </a>
                     </td>
                     <td><?php echo htmlspecialchars($row['user_name']); ?></td>
@@ -230,5 +271,16 @@ $result = $stmt->get_result();
             });
         });
     </script>
+    <script>
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted) {
+            //강제 새로고침
+            window.location.reload();
+        }
+    });
+    </script>
+
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

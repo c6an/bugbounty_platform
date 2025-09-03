@@ -44,7 +44,7 @@ $user_name = $_SESSION['user_name'];
     </div>
     </nav>
 
- <div class="container">
+ <div class="container custom-content-wrapper">
     <h1>freeboard</h1>
     <form action="write_ok.php" method="post">
       <div class="form-group">
@@ -62,6 +62,7 @@ $user_name = $_SESSION['user_name'];
           CKEDITOR.replace("content", {
             filebrowserUploadUrl: "upload.php",
             filebrowserUploadMethod: "form",
+            uploadUrl: 'upload.php'
           });
         </script>
       </div>
@@ -76,7 +77,7 @@ $user_name = $_SESSION['user_name'];
         <input type="password" class="form-control" id="secret_pw" name="secret_pw">
       </div>
     <div class="button-group">
-        <a href="board.php" class="btn">Cancel</a>
+        <a href="index.php" class="btn">Cancel</a>
         <button type="submit" class="btn">Submit</button>
   </div>
 
@@ -89,4 +90,3 @@ $user_name = $_SESSION['user_name'];
   </script>
 </body>
 </html>
-

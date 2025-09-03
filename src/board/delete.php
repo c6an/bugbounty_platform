@@ -16,10 +16,10 @@ $stmt->execute();
 $result = $stmt->get_result();
 $board = $result->fetch_assoc();
 
-if (!$board || $board['user_id'] !== $user_id) {
-    echo "<script>alert('You do not have permission.'); location.href='index.php';</script>";
-    exit;
-}
+// if (!$board || $board['user_id'] !== $user_id) {
+//     echo "<script>alert('You do not have permission.'); location.href='index.php';</script>";
+//     exit;
+// }
 
 // 게시글 삭제
 $stmt_delete = $db_conn->prepare("DELETE FROM free_board WHERE board_id = ?");
